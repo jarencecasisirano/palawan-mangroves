@@ -4,13 +4,12 @@ import os
 
 # Setup
 predictor_years = [2010, 2015, 2020]
-predictors = ["chirps", "lst", "population", "landcover", "elevation"]
+predictors = ["chirps_norm", "lst_norm", "elevation_norm"]
 rows = []
 
 # Load and clean data
 df = pd.read_csv("data/csv/mangrove_loss_regression_data.csv")
-df["population"] = df["population"].replace(-3.4028230607370965e38, pd.NA)
-df["elevation"] = df["elevation"].replace(-32768.0, pd.NA)
+df["elevation_norm"] = df["elevation_norm"].replace(-32768.0, pd.NA)
 df = df.dropna()
 
 # Loop through years
@@ -26,6 +25,11 @@ for year in predictor_years:
     valid = X.notna().all(axis=1) & y.notna()
     X = X[valid].astype("float64")
     y = y[valid].astype("float64")
+
+    # Check if any data left
+    if X.empty or y.empty:
+        print(f"⚠️ No valid data for year {year}. Skipping.")
+        continue
 
     # Add intercept and fit model
     X = sm.add_constant(X)

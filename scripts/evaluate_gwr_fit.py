@@ -4,26 +4,24 @@ from mgwr.gwr import GWR
 import numpy as np
 import os
 
-# Set paths
+# Settings
 predictor_years = [2010, 2015, 2020]
-predictors = ["chirps", "lst", "population", "landcover", "elevation"]
+predictors = ["chirps_norm", "lst_norm", "elevation_norm"]
 bandwidth = 2000
-
 rows = []
 
 for year in predictor_years:
     path = f"data/gwr_outputs/gwr_{year}_coefficients.geojson"
     gdf = gpd.read_file(path)
 
-    # Clean & prepare
     for col in predictors + ["loss"]:
         gdf[col] = pd.to_numeric(gdf[col], errors="coerce")
     gdf = gdf.dropna(subset=predictors + ["loss"])
+
     coords = np.column_stack((gdf.geometry.x, gdf.geometry.y))
     X = gdf[predictors].values
     y = gdf["loss"].values.reshape(-1, 1)
 
-    # Fit GWR again using same bandwidth
     model = GWR(coords, y, X, bw=bandwidth)
     results = model.fit()
 

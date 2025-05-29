@@ -5,7 +5,7 @@ import os
 
 # Setup
 predictor_years = [2010, 2015, 2020]
-predictors = ["chirps", "lst", "population", "landcover", "elevation"]
+predictors = ["chirps_norm", "lst_norm", "elevation_norm"]
 summary_rows = []
 
 # Load each GWR result and summarize
@@ -27,25 +27,25 @@ for year in predictor_years:
                 "mean_coef": mean_val,
                 "median_coef": gdf[col].median(),
                 "std_coef": gdf[col].std(),
-                "abs_mean_coef": abs_mean,  # For ranking
+                "abs_mean_coef": abs_mean,
             }
             summary_rows.append(row)
             year_summary.append(row)
 
-    # Rank by absolute mean
+    # Rank by absolute mean coefficient
     ranked = sorted(year_summary, key=lambda x: x["abs_mean_coef"], reverse=True)
     for i, row in enumerate(ranked, start=1):
-        row["rank"] = i  # Add rank back to main list
+        row["rank"] = i
 
-# Create DataFrame
+# Create summary DataFrame
 summary_df = pd.DataFrame(summary_rows)
 
-# Save summary to CSV
+# Save to CSV
 out_csv = "data/gwr_outputs/gwr_coefficients_summary.csv"
 summary_df.to_csv(out_csv, index=False)
 print(f"✅ Summary with rankings saved to: {out_csv}")
 
-# Plotting
+# Plotting coefficient trends
 plt.figure(figsize=(10, 6))
 for var in predictors:
     subset = summary_df[summary_df["variable"] == var]
