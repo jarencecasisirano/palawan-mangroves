@@ -54,11 +54,11 @@ E2 --> F1
 %% Visualization
 E1 --> V1[Visualize Heatmaps in QGIS using Symbology Renderer]
 
-%% OLS Regression Path
+%% Logistic Regression Path
 F1 --> R1[Run Logistic Regression per Interval]
-R1 --> R2[Summarize OLS Coefficients]
+R1 --> R2[Summarize Logistic Coefficients]
 R2 --> R3[Check Multicollinearity using VIF]
-R3 --> R4[Evaluate OLS Model Fit using R2 AIC LLF]
+R3 --> R4[Evaluate Logistic Model Fit using R2 AIC LLF]
 
 %% GWR Path
 F1 --> GWR1[Run GWR per Interval using 6000 meter Bandwidth]
